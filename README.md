@@ -12,6 +12,19 @@ Cross-platform Python toolkit for automated COMSOL Multiphysics workflows: eigen
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![COMSOL 6.x](https://img.shields.io/badge/COMSOL-6.x-green.svg)](https://www.comsol.com/)
 
+### Primary Use Case
+
+This toolkit was developed for **piezoelectric resonator simulations** (RAFT-FEM workflows), but the core infrastructure (`config`, `comsol_helpers`) is **physics-agnostic** and applicable to any COMSOL eigenfrequency or multiphysics study.
+
+**Domain-specific modules** (piezoelectric applications):
+- `modal_matrix.py` - Extract strain/stress fields and electrostatic coupling for piezoelectric modal analysis
+- `comsol_interface.py` (experimental) - Geometry/physics setup for MEMS resonators
+
+**General-purpose modules** (any COMSOL workflow):
+- `config.py` - Cross-platform configuration
+- `comsol_helpers.py` - JPype wrappers for studies, solvers, result extraction
+- `io_utils.py` - Generic I/O utilities
+
 ### Features
 
 ✅ **Cross-Platform**: Auto-detect COMSOL on Windows/Linux/macOS  
@@ -299,6 +312,19 @@ MIT License - see [LICENSE](LICENSE) for details.
 ## 中文
 
 跨平台 COMSOL Multiphysics 自动化 Python 工具包：特征频率研究、模态分析和参数扫描。
+
+### 主要应用场景
+
+本工具包最初为**压电谐振器仿真**（RAFT-FEM 工作流）开发，但核心基础设施（`config`、`comsol_helpers`）是**物理场无关**的，适用于任何 COMSOL 特征频率或多物理场研究。
+
+**领域专用模块**（压电应用）：
+- `modal_matrix.py` - 提取应变/应力场和静电耦合，用于压电模态分析
+- `comsol_interface.py`（实验性）- MEMS 谐振器的几何/物理场设置
+
+**通用模块**（任何 COMSOL 工作流）：
+- `config.py` - 跨平台配置管理
+- `comsol_helpers.py` - 研究、求解器、结果提取的 JPype 封装
+- `io_utils.py` - 通用 I/O 工具
 
 ### 特性
 
