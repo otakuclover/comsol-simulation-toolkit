@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
 authors = [
-    {name = "WHU_Clover"}
+    {name = "otakuclover", email = "otakuclover@users.noreply.github.com"}
 ]
 keywords = ["COMSOL", "FEM", "simulation", "modal analysis", "eigenfrequency", "automation"]
 classifiers = [
@@ -23,7 +23,8 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering :: Physics",
-    "Operating System :: OS Independent",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
 ]
 
 dependencies = [
@@ -52,9 +53,9 @@ visualization = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/WHU_Clover/comsol-simulation-toolkit"
-Repository = "https://github.com/WHU_Clover/comsol-simulation-toolkit"
-Issues = "https://github.com/WHU_Clover/comsol-simulation-toolkit/issues"
+Homepage = "https://github.com/otakuclover/comsol-simulation-toolkit"
+Repository = "https://github.com/otakuclover/comsol-simulation-toolkit"
+Issues = "https://github.com/otakuclover/comsol-simulation-toolkit/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

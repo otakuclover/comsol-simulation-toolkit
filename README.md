@@ -46,7 +46,7 @@ This toolkit was developed for **piezoelectric resonator simulations**, but the 
 
 ```bash
 # Clone repository
-git clone https://github.com/WHU_Clover/comsol-simulation-toolkit.git
+git clone https://github.com/otakuclover/comsol-simulation-toolkit.git
 cd comsol-simulation-toolkit
 
 # Install with pip
@@ -290,9 +290,9 @@ MIT License - see [LICENSE](LICENSE) for details.
 ```bibtex
 @software{comsol_simulation_toolkit,
   title = {COMSOL Simulation Toolkit},
-  author = {WHU\_Clover},
+  author = {otakuclover},
   year = {2026},
-  url = {https://github.com/WHU_Clover/comsol-simulation-toolkit}
+  url = {https://github.com/otakuclover/comsol-simulation-toolkit}
 }
 ```
 
@@ -341,7 +341,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ```bash
 # 克隆仓库
-git clone https://github.com/WHU_Clover/comsol-simulation-toolkit.git
+git clone https://github.com/otakuclover/comsol-simulation-toolkit.git
 cd comsol-simulation-toolkit
 
 # 使用 pip 安装
@@ -527,9 +527,9 @@ MIT License - 详见 [LICENSE](LICENSE)
 ```bibtex
 @software{comsol_simulation_toolkit,
   title = {COMSOL Simulation Toolkit},
-  author = {WHU\_Clover},
+  author = {otakuclover},
   year = {2026},
-  url = {https://github.com/WHU_Clover/comsol-simulation-toolkit}
+  url = {https://github.com/otakuclover/comsol-simulation-toolkit}
 }
 ```
 
