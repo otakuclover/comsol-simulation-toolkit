@@ -293,7 +293,6 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 - Built on [MPh](https://github.com/MPh-py/MPh) for COMSOL Python interface
 - Uses [JPype](https://github.com/jpype-project/jpype) for Java integration
-- Inspired by RAFT-FEM research workflows
 
 ---
 
@@ -524,4 +523,3 @@ MIT License - 详见 [LICENSE](LICENSE)
 
 - 基于 [MPh](https://github.com/MPh-py/MPh) 构建 COMSOL Python 接口
 - 使用 [JPype](https://github.com/jpype-project/jpype) 进行 Java 集成
-- 受 RAFT-FEM 研究工作流启发
