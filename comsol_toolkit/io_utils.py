@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
-"""RAFT modal-matrix IO helpers (pure numpy/pandas, no COMSOL).
+"""Modal-matrix IO helpers (pure numpy/pandas, no COMSOL).
 
-Shared loader for RAFT eigenfrequency + modal-matrix CSV exports, used by the
-blind-test, baseline-attack, and kt-proxy validation scripts. Centralizes the
-parsing of the raw COMSOL modal_matrix_integrals.csv format so the per-mode
-quantities (eta_i_eng, K_storage_ii, eta^2/K coupling) are computed identically
-everywhere.
+Shared loader for eigenfrequency + modal-matrix CSV exports, used by downstream
+analysis scripts. Centralizes the parsing of raw COMSOL modal_matrix_integrals.csv
+format so per-mode quantities (eta_i_eng, K_storage_ii, eta^2/K coupling) are
+computed identically everywhere.
 
-Raw modal_matrix CSV schema (from export_raft_modal_matrix_comsol.py):
+Raw modal_matrix CSV schema:
     domain_label, domain_ids, data_tag, left_solnum, selection_note, expr,
     expr_key, value_real, value_imag, value_abs, right_solnum, integral_kind
 Diagonal quantities are rows where left_solnum == right_solnum.
@@ -81,13 +80,11 @@ def load_case_modes(modal_dir, case: str, shifts, neigs_tag: str = "neigs24") ->
 
 def dedup_modes(df: pd.DataFrame, dedup_mhz: float = 5.0,
                 rank_by: str = "coupling") -> pd.DataFrame:
-    """Collapse the same physical mode seen across multiple shifts.
+    """Collapse the same physical mode seen across multiple frequency windows.
 
-    Event-centered RAFT samples the same eigenmode from several shift windows,
-    producing near-identical (freq, coupling) rows. Cluster by frequency
-    proximity (< dedup_mhz) and keep the max-`rank_by` representative per
-    cluster. Without this, top-1 and top-2 can be the same physical mode from
-    different shifts, giving a fake margin of 0.
+    When sampling eigenmodes from several frequency shifts, the same physical mode
+    can appear multiple times with near-identical frequencies. Cluster by frequency
+    proximity (< dedup_mhz) and keep the max-`rank_by` representative per cluster.
     """
     if df.empty:
         return df

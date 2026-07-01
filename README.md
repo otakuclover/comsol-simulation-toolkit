@@ -14,7 +14,7 @@ Cross-platform Python toolkit for automated COMSOL Multiphysics workflows: eigen
 
 ### Primary Use Case
 
-This toolkit was developed for **piezoelectric resonator simulations** (RAFT-FEM workflows), but the core infrastructure (`config`, `comsol_helpers`) is **physics-agnostic** and applicable to any COMSOL eigenfrequency or multiphysics study.
+This toolkit was developed for **piezoelectric resonator simulations**, but the core infrastructure (`config`, `comsol_helpers`) is **physics-agnostic** and applicable to any COMSOL eigenfrequency or multiphysics study.
 
 **Domain-specific modules** (piezoelectric applications):
 - `modal_matrix.py` - Extract strain/stress fields and electrostatic coupling for piezoelectric modal analysis
@@ -27,7 +27,7 @@ This toolkit was developed for **piezoelectric resonator simulations** (RAFT-FEM
 
 ### Features
 
-✅ **Cross-Platform**: Auto-detect COMSOL on Windows/Linux/macOS  
+✅ **Cross-Platform**: Auto-detect COMSOL on Windows/Linux  
 ✅ **Environment-Based Config**: `.env` file support with sensible defaults  
 ✅ **Low-Level COMSOL Helpers**: JPype wrappers for eigenfrequency studies, modal matrices, field extraction  
 ✅ **Graceful Degradation**: Clear error messages when COMSOL not found  
@@ -149,13 +149,7 @@ See [API Reference](#api-reference) for details.
 # /opt/comsol*/multiphysics
 ```
 
-#### macOS
-```bash
-# COMSOL auto-detected from:
-# /Applications/COMSOL*/Multiphysics.app
-
-# Note: Rosetta 2 required for Apple Silicon
-```
+**Note**: macOS is not tested. Set `COMSOL_ROOT` manually if needed.
 
 ### Project Structure
 
@@ -315,7 +309,7 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ### 主要应用场景
 
-本工具包最初为**压电谐振器仿真**（RAFT-FEM 工作流）开发，但核心基础设施（`config`、`comsol_helpers`）是**物理场无关**的，适用于任何 COMSOL 特征频率或多物理场研究。
+本工具包最初为**压电谐振器仿真**开发，但核心基础设施（`config`、`comsol_helpers`）是**物理场无关**的，适用于任何 COMSOL 特征频率或多物理场研究。
 
 **领域专用模块**（压电应用）：
 - `modal_matrix.py` - 提取应变/应力场和静电耦合，用于压电模态分析
@@ -450,13 +444,7 @@ for i, freq in enumerate(eigenfreqs, 1):
 # /opt/comsol*/multiphysics
 ```
 
-#### macOS
-```bash
-# COMSOL 自动检测路径：
-# /Applications/COMSOL*/Multiphysics.app
-
-# 注意：Apple Silicon 需要 Rosetta 2
-```
+**注意**：macOS 未经测试。如需使用请手动设置 `COMSOL_ROOT`。
 
 ### 项目结构
 

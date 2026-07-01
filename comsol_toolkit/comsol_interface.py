@@ -13,7 +13,7 @@ Future plans:
 3. Lightweight displacement statistics (volume integrals)
 4. Static capacitance calculation
 
-This module is based on logic from RAFT-FEM research workflows but not yet production-ready.
+This module is based on piezoelectric resonator workflows but not yet production-ready.
 """
 
 from __future__ import annotations
@@ -135,7 +135,7 @@ def run_eigenfrequency_study(
     model: Any,
     neigs: int = 20,
     shift_ghz: float = 5.0,
-    study_tag: str = "std_raft_eigen",
+    study_tag: str = "eig1",
 ) -> dict[str, Any]:
     """Run eigenfrequency study.
 
@@ -253,7 +253,7 @@ def extract_modal_matrix(
         ]
     """
     # TODO: Implement full modal matrix extraction
-    # Reuse logic from export_raft_modal_matrix_comsol.py
+    # See modal_matrix.py for specification generation
 
     # For now, return placeholder
     j = model.java

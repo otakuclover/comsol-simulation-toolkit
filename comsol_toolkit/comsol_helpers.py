@@ -1,8 +1,7 @@
-"""RAFT COMSOL helper functions: jpype conversion, study creation, result extraction.
+"""COMSOL helper functions: jpype conversion, study creation, result extraction.
 
-Shared by export_eigenmode_field_xz.py and export_raft_modal_matrix_comsol.py
-to avoid duplicating COMSOL Java API boilerplate. All functions require mph
-and jpype to be available in the calling environment.
+Low-level wrappers for COMSOL Java API to avoid duplicating boilerplate.
+All functions require mph and jpype to be available in the calling environment.
 
 Usage:
     import mph

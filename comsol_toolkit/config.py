@@ -136,19 +136,12 @@ def auto_detect_comsol_root() -> Path:
                 mp_path = comsol_dir / "multiphysics"
                 if mp_path.exists():
                     return mp_path.resolve()
-
-    elif sys.platform == "darwin":
-        # macOS
-        app_dir = Path("/Applications")
-        if app_dir.exists():
-            comsol_apps = sorted(
-                [d for d in app_dir.iterdir() if d.is_dir() and d.name.startswith("COMSOL")],
-                reverse=True
-            )
-            for app in comsol_apps:
-                mp_path = app / "Multiphysics.app"
-                if mp_path.exists():
-                    return mp_path.resolve()
+    else:
+        raise RuntimeError(
+            f"Unsupported platform: {sys.platform}\n"
+            "This toolkit supports Windows and Linux only.\n"
+            "macOS support is not tested. Set COMSOL_ROOT manually if needed."
+        )
 
     raise RuntimeError(
         "COMSOL installation not found. Please set COMSOL_ROOT environment variable.\n"

@@ -1,6 +1,6 @@
 """
-用途：生成 RAFT-FEM 物理 subspace 矩阵导出规格。时间：2026-06-11
-不修改：不打开 COMSOL，不读取目标导纳，不拟合 LSQ residue。
+Generate modal matrix export specification for piezoelectric resonators.
+Does not open COMSOL or fit parameters - only generates JSON specifications.
 """
 
 from __future__ import annotations
@@ -132,7 +132,7 @@ def build_export_spec(
 
 def render_markdown(spec: dict[str, object]) -> str:
     lines = [
-        "# RAFT-FEM Physical Modal Matrix Export Spec",
+        "# Piezoelectric Modal Matrix Export Specification",
         "",
         f"Purpose: `{spec['purpose']}`.",
         "",
@@ -157,7 +157,7 @@ def render_markdown(spec: dict[str, object]) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Generate a dry-run RAFT-FEM physical modal matrix export specification.")
+    parser = argparse.ArgumentParser(description="Generate modal matrix export specification for piezoelectric resonators.")
     parser.add_argument("--neigs", type=int, default=32)
     parser.add_argument("--shift", default="17.45[GHz]")
     parser.add_argument("--drive-field-source", choices=["static-es", "forced-frequency"], default="static-es")
