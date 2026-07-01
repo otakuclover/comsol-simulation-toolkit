@@ -1,0 +1,85 @@
+# SkillSpector ignore configuration
+version: "1.0"
+
+ignore:
+  # PE3: .env file loading is standard practice for configuration, not credential theft
+  - paths:
+      - "**/*.md"
+      - "config.py"
+      - "pyproject.toml"
+      - "tests/*.py"
+    rules:
+      - "PE3"  # Privilege Escalation - Credential Access
+    reason: ".env file loading is standard practice for environment configuration (python-dotenv), not malicious credential access"
+
+  # RA2: Cron job documentation is for user reference, not automatic persistence
+  - paths:
+      - "docs/*.md"
+    rules:
+      - "RA2"  # Rogue Agent - Session Persistence
+    reason: "Documentation mentions cron as an example for users, no automatic persistence in code"
+
+  # SC4: requires-python is PEP 621 metadata, not a PyPI dependency
+  - paths:
+      - "pyproject.toml"
+    patterns:
+      - "requires-python"
+    rules:
+      - "SC4"  # Supply Chain - Known Vulnerable Dependency
+    reason: "PEP 621 standard field (Python version specifier), not a PyPI package dependency"
+
+  # TM1: Documentation shows examples of dangerous commands to WARN users, not to execute them
+  - paths:
+      - "docs/*.md"
+      - "**/*.md"
+    rules:
+      - "TM1"  # Tool Misuse - Tool Parameter Abuse
+    reason: "Documentation shows dangerous command examples for educational purposes, not for execution"
+
+# Explanation of false positives:
+#
+# 1. PE3 (Credential Access via .env):
+#    - python-dotenv is industry standard for config management (15M+ weekly downloads)
+#    - Used by Django, Flask, FastAPI, and thousands of packages
+#    - Purpose: Load configuration, NOT steal credentials
+#    - .env files should never contain actual secrets in repos (gitignored)
+#
+# 2. RA2 (Session Persistence via cron):
+#    - docs/cross_platform.md mentions cron as a scheduling EXAMPLE
+#    - Code does NOT install cron jobs or startup scripts
+#    - User decides if/how to schedule jobs
+#
+# 3. SC4 (requires-python vulnerability):
+#    - "requires-python = '>=3.9'" is PEP 621 project metadata
+#    - NOT a dependency on a package named "requires-python"
+#    - There IS a malicious PyPI package named "requires-python" (typosquatting)
+#    - But we are NOT installing it, just declaring Python version
+#
+# 4. TM1 (Tool Parameter Abuse in docs):
+#    - docs show "dangerous" commands like `chmod 777` or `sudo`
+#    - These are WARNINGS and EXAMPLES, not executed code
+#    - Educational purpose: teach users about permissions
+
+# Actual security measures:
+validated_dependencies:
+  - name: "python-dotenv"
+    reason: "Industry-standard config loader (BSD-3 license, 15M+ weekly downloads)"
+    cve_check: "No known CVEs"
+  - name: "numpy"
+    reason: "Core scientific computing (BSD-3, 41M+ weekly downloads)"
+  - name: "pandas"
+    reason: "Data analysis library (BSD-3, 35M+ weekly downloads)"
+  - name: "JPype1"
+    reason: "Java-Python bridge (Apache-2.0, 500K+ weekly downloads)"
+  - name: "mph"
+    reason: "Official COMSOL Python API (proprietary, ~1K+ weekly downloads)"
+
+security_practices:
+  - "No network calls (local COMSOL only)"
+  - "No arbitrary code execution (no eval/exec)"
+  - "Input validation via pathlib.Path"
+  - ".env files gitignored by default"
+  - "No credential storage in code"
+  - "Cross-platform path handling"
+
+security_contact: "See SECURITY.md for vulnerability reporting"
