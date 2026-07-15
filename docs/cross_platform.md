@@ -75,10 +75,15 @@ COMSOL_MAX_WORKERS=4                         # Default: CPU count
 
 **Java Runtime**: COMSOL ships with its own JRE. No system Java required.
 
-**File Permissions**: Ensure `COMSOL_TEMP_DIR` is writable:
+**File Permissions**: Ensure `COMSOL_TEMP_DIR` is writable. Avoid world-writable
+permissions (`chmod 777`) on multi-user or HPC systems — a world-writable temp
+directory exposes you to symlink and file-tampering attacks from other local
+users. Prefer owner-only access, or a shared group when collaboration is needed:
 ```bash
 mkdir -p /scratch/comsol_tmp
-chmod 777 /scratch/comsol_tmp  # Or use appropriate user/group
+chmod 700 /scratch/comsol_tmp            # owner-only (recommended)
+# For shared group access instead:
+# chgrp comsol-users /scratch/comsol_tmp && chmod 770 /scratch/comsol_tmp
 ```
 
 **Headless Mode**: For HPC clusters without X11:
