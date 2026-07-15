@@ -15,9 +15,13 @@ Eigenfrequency CSV schema: eig_solnum, eig_freq_ghz
 
 from __future__ import annotations
 
+import logging
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
+
+logger = logging.getLogger(__name__)
 
 
 def load_case_modes(modal_dir, case: str, shifts, neigs_tag: str = "neigs24") -> pd.DataFrame:
@@ -36,6 +40,8 @@ def load_case_modes(modal_dir, case: str, shifts, neigs_tag: str = "neigs24") ->
         mat_p = modal_dir / f"event_centered_{case}_shift_{s:03d}_{neigs_tag}_modal_matrix_integrals.csv"
         eig_p = modal_dir / f"event_centered_{case}_shift_{s:03d}_{neigs_tag}_eigenfrequencies.csv"
         if not mat_p.exists() or not eig_p.exists():
+            missing = [str(p) for p in (mat_p, eig_p) if not p.exists()]
+            logger.warning("Skipping shift %s for case %r; missing files: %s", s, case, missing)
             continue
         mat = pd.read_csv(mat_p)
         eig = pd.read_csv(eig_p)

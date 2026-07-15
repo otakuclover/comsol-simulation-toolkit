@@ -26,9 +26,13 @@ Usage:
 """
 
 from __future__ import annotations
+
+import logging
 from typing import Any
-from pathlib import Path
+
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 def ensure_jpype():
@@ -84,8 +88,10 @@ def start_comsol_client(config=None):
         config.temp_dir.mkdir(parents=True, exist_ok=True)
         from com.comsol.model.util import ModelUtil
         ModelUtil.setPreference("tempfiles.folder", str(config.temp_dir))
-    except Exception:
-        pass
+    except Exception as exc:
+        raise RuntimeError(
+            f"Failed to configure COMSOL temp directory {config.temp_dir}: {exc}"
+        ) from exc
     return client
 
 
@@ -110,20 +116,35 @@ def java_matrix_to_rows(obj: Any) -> list[list[float]]:
 
 
 def tags(collection: Any) -> list[str]:
-    """Extract string tags from a COMSOL collection (study, dataset, feature)."""
-    try:
-        return [str(item) for item in list(collection.tags())]
-    except Exception:
-        return []
+    """Extract string tags from a COMSOL collection (study, dataset, feature).
+
+    Raises whatever the underlying COMSOL/Java call raises. Callers that want
+    best-effort behaviour (e.g. remove_if_exists) are responsible for handling
+    failures explicitly rather than having them silently converted to an empty
+    list, which would mask a broken collection handle as "no tags".
+    """
+    return [str(item) for item in list(collection.tags())]
 
 
 def remove_if_exists(collection: Any, tag: str) -> None:
-    """Remove a tag from a COMSOL collection if it exists, silently ignore if not."""
+    """Remove a tag from a COMSOL collection if it exists.
+
+    Removal is best-effort cleanup, so failures are logged rather than raised.
+    Unlike the previous implementation, failures are no longer silently
+    swallowed: a warning is emitted so a genuinely broken collection or a
+    removal that COMSOL rejects is visible in logs.
+    """
     try:
-        if tag in tags(collection):
-            collection.remove(tag)
-    except Exception:
-        pass
+        existing = tags(collection)
+    except Exception as exc:
+        logger.warning("Could not list tags on %r while removing %r: %s", collection, tag, exc)
+        return
+    if tag not in existing:
+        return
+    try:
+        collection.remove(tag)
+    except Exception as exc:
+        logger.warning("Failed to remove existing tag %r from %r: %s", tag, collection, exc)
 
 
 def latest_tag(after: list[str], before: list[str]) -> str:
