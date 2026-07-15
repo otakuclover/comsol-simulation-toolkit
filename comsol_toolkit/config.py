@@ -149,6 +149,14 @@ def auto_detect_comsol_root() -> Path:
     )
 
 
+def _path_from_arg_or_env(arg: Optional[str | Path], env_key: str) -> Optional[Path]:
+    """Resolve a path from an explicit argument, then an env var, else None."""
+    if arg:
+        return Path(arg)
+    env_val = os.environ.get(env_key)
+    return Path(env_val) if env_val else None
+
+
 def load_config(
     comsol_root: Optional[str | Path] = None,
     temp_dir: Optional[str | Path] = None,
@@ -182,15 +190,9 @@ def load_config(
     """
     config = COMSOLConfig(
         comsol_root=Path(comsol_root) if comsol_root else None,
-        temp_dir=Path(temp_dir) if temp_dir else (
-            Path(os.environ["COMSOL_TEMP_DIR"]) if "COMSOL_TEMP_DIR" in os.environ else None
-        ),
-        project_dir=Path(project_dir) if project_dir else (
-            Path(os.environ["SIMULATION_PROJECT_DIR"]) if "SIMULATION_PROJECT_DIR" in os.environ else None
-        ),
-        results_dir=Path(results_dir) if results_dir else (
-            Path(os.environ["SIMULATION_RESULTS_DIR"]) if "SIMULATION_RESULTS_DIR" in os.environ else None
-        ),
+        temp_dir=_path_from_arg_or_env(temp_dir, "COMSOL_TEMP_DIR"),
+        project_dir=_path_from_arg_or_env(project_dir, "SIMULATION_PROJECT_DIR"),
+        results_dir=_path_from_arg_or_env(results_dir, "SIMULATION_RESULTS_DIR"),
         max_workers=max_workers or int(os.environ.get("COMSOL_MAX_WORKERS", "0")) or os.cpu_count() or 4,
     )
 

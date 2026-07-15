@@ -27,11 +27,17 @@ import numpy as np
 
 from .comsol_helpers import (
     init_comsol_runtime,
-    tags,
     remove_if_exists,
-    jint,
     java_matrix_to_rows,
+    new_eval_global,
 )
+
+
+def _eval_freqs_hz(jmodel: Any, data_tag: str, eval_tag: str) -> list[float]:
+    """Evaluate the global 'freq' expression on a dataset, returning Hz values."""
+    eval_node = new_eval_global(jmodel, eval_tag, data_tag, ["freq"])
+    result = eval_node.computeResult()
+    return java_matrix_to_rows(result[0])[0] if result else []
 
 
 # ============================================================================
@@ -198,16 +204,7 @@ def run_eigenfrequency_study(
     data_tag = f"dset_{study_tag}"
 
     # Extract eigenfrequencies
-    res = j.result()
-    eval_tag = f"eval_{study_tag}_freq"
-    remove_if_exists(res.numerical(), eval_tag)
-    eval_node = res.numerical().create(eval_tag, "EvalGlobal")
-    eval_node.set("data", data_tag)
-    eval_node.set("expr", ["freq"])
-
-    # Get all eigenvalues
-    result = eval_node.computeResult()
-    freqs_hz = java_matrix_to_rows(result[0])[0] if result else []
+    freqs_hz = _eval_freqs_hz(j, data_tag, f"eval_{study_tag}_freq")
     neigs_converged = len(freqs_hz)
 
     print(f"  Converged {neigs_converged}/{neigs} eigenvalues in {elapsed:.1f} sec")
@@ -257,16 +254,9 @@ def extract_modal_matrix(
 
     # For now, return placeholder
     j = model.java
-    res = j.result()
 
     # Get eigenfrequencies
-    eval_tag = "eval_modal_freq"
-    remove_if_exists(res.numerical(), eval_tag)
-    eval_node = res.numerical().create(eval_tag, "EvalGlobal")
-    eval_node.set("data", data_tag)
-    eval_node.set("expr", ["freq"])
-    result = eval_node.computeResult()
-    freqs_hz = java_matrix_to_rows(result[0])[0] if result else []
+    freqs_hz = _eval_freqs_hz(j, data_tag, "eval_modal_freq")
 
     # Placeholder: return mock modal data
     # TODO: Compute actual IntVolume integrals for eta, K, M

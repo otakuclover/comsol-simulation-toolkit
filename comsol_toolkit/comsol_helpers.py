@@ -39,6 +39,25 @@ def ensure_jpype():
         raise ImportError("jpype1 required for COMSOL Java bridge") from exc
 
 
+def _resolve_config(config=None):
+    """Return the given config, loading the default config when None."""
+    if config is None:
+        from .config import load_config
+        config = load_config()
+    return config
+
+
+def configure_temp_dir(config) -> Any:
+    """Create the configured temp dir and point COMSOL's tempfiles.folder at it.
+
+    Returns the com.comsol.model.util.ModelUtil Java class.
+    """
+    config.temp_dir.mkdir(parents=True, exist_ok=True)
+    from com.comsol.model.util import ModelUtil
+    ModelUtil.setPreference("tempfiles.folder", str(config.temp_dir))
+    return ModelUtil
+
+
 def init_comsol_runtime(config=None):
     """Initialize COMSOL runtime and return ModelUtil.
 
@@ -53,19 +72,14 @@ def init_comsol_runtime(config=None):
         RuntimeError: If COMSOL initialization fails
     """
     import mph
-    if config is None:
-        from .config import load_config
-        config = load_config()
+    config = _resolve_config(config)
 
     # Start mph client to initialize COMSOL runtime
-    client = mph.start()
+    mph.start()
 
     # Configure temp directory
     try:
-        config.temp_dir.mkdir(parents=True, exist_ok=True)
-        from com.comsol.model.util import ModelUtil
-        ModelUtil.setPreference("tempfiles.folder", str(config.temp_dir))
-        return ModelUtil
+        return configure_temp_dir(config)
     except Exception as exc:
         raise RuntimeError(f"Failed to initialize COMSOL runtime: {exc}") from exc
 
@@ -76,14 +90,10 @@ def start_comsol_client(config=None):
     Returns mph.Client. Caller should session.client=None before calling.
     """
     import mph
-    if config is None:
-        from .config import load_config
-        config = load_config()
+    config = _resolve_config(config)
     client = mph.start()
     try:
-        config.temp_dir.mkdir(parents=True, exist_ok=True)
-        from com.comsol.model.util import ModelUtil
-        ModelUtil.setPreference("tempfiles.folder", str(config.temp_dir))
+        configure_temp_dir(config)
     except Exception:
         pass
     return client
@@ -138,6 +148,20 @@ def latest_tag(after: list[str], before: list[str]) -> str:
     return new_tags[0]
 
 
+def new_eval_global(jmodel: Any, eval_tag: str, data_tag: str, exprs: list[str]) -> Any:
+    """Create a fresh EvalGlobal numerical node bound to a dataset and expressions.
+
+    Any pre-existing node with `eval_tag` is removed first. The returned node is
+    the caller's responsibility to evaluate (getReal/computeResult) and clean up.
+    """
+    numerical = jmodel.result().numerical()
+    remove_if_exists(numerical, eval_tag)
+    node = numerical.create(eval_tag, "EvalGlobal")
+    node.set("data", data_tag)
+    node.set("expr", exprs)
+    return node
+
+
 def create_eigen_study(
     jmodel: Any,
     study_tag: str,
@@ -174,11 +198,8 @@ def eval_eigenfrequencies(jmodel: Any, data_tag: str, neigs: int) -> list[dict[s
     mode_idx is 1-based.
     """
     eval_tag = "eval_eigenfreq_tmp"
-    remove_if_exists(jmodel.result().numerical(), eval_tag)
-    num = jmodel.result().numerical().create(eval_tag, "EvalGlobal")
+    num = new_eval_global(jmodel, eval_tag, data_tag, ["freq"])
     try:
-        num.set("data", data_tag)
-        num.set("expr", ["freq"])
         raw = java_matrix_to_rows(num.getReal())
         freqs = raw[0] if raw else []
         return [{"mode_idx": i + 1, "f_ghz": float(f) / 1e9} for i, f in enumerate(freqs[:neigs])]
