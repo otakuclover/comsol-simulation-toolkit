@@ -9,6 +9,7 @@ __author__ = "WHU_Clover"
 
 from .comsol_helpers import (
     init_comsol_runtime,
+    configure_temp_dir,
     ensure_jpype,
     start_comsol_client,
     jint,
@@ -16,6 +17,7 @@ from .comsol_helpers import (
     java_matrix_to_rows,
     tags,
     remove_if_exists,
+    new_eval_global,
     create_eigen_study,
     eval_eigenfrequencies,
     parse_interp_data,
@@ -29,6 +31,7 @@ __all__ = [
     "auto_detect_comsol_root",
     # Helpers
     "init_comsol_runtime",
+    "configure_temp_dir",
     "ensure_jpype",
     "start_comsol_client",
     "jint",
@@ -36,6 +39,7 @@ __all__ = [
     "java_matrix_to_rows",
     "tags",
     "remove_if_exists",
+    "new_eval_global",
     "create_eigen_study",
     "eval_eigenfrequencies",
     "parse_interp_data",
